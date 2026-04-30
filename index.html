@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M5 Advisors — Digital Infrastructure Advisory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink:   '#0A0A0A',
+            mist:  '#F4F2EE',
+            slate: '#6B6B65',
+            rule:  '#D8D5CF',
+            steel: '#1C3548',
+            amber: '#B8935A',
+          },
+          fontFamily: {
+            sans: ['IBM Plex Sans', 'sans-serif'],
+            mono: ['IBM Plex Mono', 'monospace'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+    /* ── Grain overlay ── */
+    .grain { isolation: isolate; }
+    .grain::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.038;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* ── Hero photo ── */
+    .hero-photo {
+      position: absolute; inset: 0;
+      background-image: url('brand_assets/m5-brand-guidelines_files/pexels-photo-20416555.jpeg');
+      background-size: cover;
+      background-position: center 40%;
+      filter: grayscale(22%) contrast(1.07);
+      z-index: 0;
+      transform: scale(1.04);
+      transition: transform 9s cubic-bezier(0.0, 0.0, 0.2, 1.0);
+    }
+    .hero-photo.loaded { transform: scale(1.0); }
+
+    .hero-overlay {
+      position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(
+        168deg,
+        rgba(10,10,10,0.92) 0%,
+        rgba(10,10,10,0.68) 42%,
+        rgba(10,10,10,0.95) 100%
+      );
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp 0.95s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    .d1 { animation-delay: 0.08s; }
+    .d2 { animation-delay: 0.20s; }
+    .d3 { animation-delay: 0.34s; }
+    .d4 { animation-delay: 0.48s; }
+    .d5 { animation-delay: 0.62s; }
+
+    /* ── Scroll reveal ── */
+    .sr {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1), transform 0.75s cubic-bezier(0.16,1,0.3,1);
+    }
+    .sr.vis { opacity: 1; transform: translateY(0); }
+    .sr-1 { transition-delay: 0.07s; }
+    .sr-2 { transition-delay: 0.16s; }
+    .sr-3 { transition-delay: 0.26s; }
+    .sr-4 { transition-delay: 0.36s; }
+
+    /* ── Nav ── */
+    .nav-link { position: relative; }
+    .nav-link::after {
+      content: ''; position: absolute;
+      bottom: -3px; left: 0;
+      width: 0; height: 1px;
+      background: #B8935A;
+      transition: width 0.28s cubic-bezier(0.16,1,0.3,1);
+    }
+    .nav-link:hover::after { width: 100%; }
+
+    /* ── Amber rule ── */
+    .rule {
+      display: block;
+      width: 32px; height: 1px;
+      background: #B8935A;
+      flex-shrink: 0;
+    }
+
+    /* ── Service rows ── */
+    .svc-row {
+      border-bottom: 1px solid #D8D5CF;
+      cursor: default;
+      transition: background-color 0.38s cubic-bezier(0.16,1,0.3,1);
+    }
+    .svc-row:hover { background-color: #0A0A0A; }
+    .svc-row:hover .svc-num   { color: rgba(184,147,90,0.55) !important; }
+    .svc-row:hover .svc-title { color: #fff !important; }
+    .svc-row:hover .svc-body  { color: rgba(255,255,255,0.55) !important; }
+    .svc-row:hover .svc-rule  { width: 56px; }
+    .svc-rule {
+      height: 1px; width: 32px;
+      background: #B8935A;
+      transition: width 0.38s cubic-bezier(0.16,1,0.3,1);
+      margin-bottom: 18px;
+    }
+
+    /* ── Project cards ── */
+    .proj-card { cursor: default; }
+    .proj-thumb {
+      position: relative;
+      overflow: hidden;
+      background: #0A0A0A;
+    }
+    .proj-thumb img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: grayscale(18%) contrast(1.05);
+      transition: transform 0.55s cubic-bezier(0.16,1,0.3,1), filter 0.55s;
+    }
+    .proj-card:hover .proj-thumb img {
+      transform: scale(1.04);
+      filter: grayscale(0%) contrast(1.05);
+    }
+    .proj-thumb-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(10,10,10,0.55) 0%, transparent 55%);
+      transition: opacity 0.45s;
+    }
+
+    /* ── About photo ── */
+    .about-photo {
+      background-image: url('brand_assets/m5-brand-guidelines_files/pexels-photo-6109449.jpeg');
+      background-size: cover;
+      background-position: center 35%;
+      filter: grayscale(28%) contrast(1.06);
+    }
+
+    /* ── Buttons ── */
+    .btn-solid {
+      display: inline-flex; align-items: center; gap: 12px;
+      padding: 15px 32px;
+      background: #fff; color: #0A0A0A;
+      font-size: 13px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.28), 0 4px 18px rgba(0,0,0,0.18);
+      transition: background-color 0.25s, color 0.25s, box-shadow 0.25s, transform 0.15s;
+    }
+    .btn-solid:hover {
+      background-color: #B8935A; color: #fff;
+      box-shadow: 0 2px 4px rgba(184,147,90,0.22), 0 8px 28px rgba(184,147,90,0.18);
+    }
+    .btn-solid:active { transform: scale(0.97); }
+    .btn-solid:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 12px;
+      padding: 15px 32px;
+      border: 1px solid #B8935A; color: #B8935A;
+      font-size: 13px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      transition: background-color 0.25s, color 0.25s, transform 0.15s;
+    }
+    .btn-outline:hover { background-color: #B8935A; color: #0A0A0A; }
+    .btn-outline:active { transform: scale(0.97); }
+    .btn-outline:focus-visible { outline: 2px solid #B8935A; outline-offset: 3px; }
+
+    /* ── Divider ── */
+    .vdiv { width: 1px; background: rgba(255,255,255,0.10); align-self: stretch; }
+
+    /* ── Project tag chip ── */
+    .proj-tag {
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: #6B6B65; padding: 5px 10px;
+      border: 1px solid #D8D5CF;
+    }
+
+    /* ── Section label (kicker) ── */
+    .kicker {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: #B8935A;
+    }
+  </style>
+</head>
+<body class="font-sans bg-ink text-ink">
+
+
+  <!-- ━━━━ NAV ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <header class="fixed top-0 left-0 right-0 z-50"
+          style="background: rgba(10,10,10,0.93); backdrop-filter: blur(18px) saturate(180%); border-bottom: 1px solid rgba(255,255,255,0.07);">
+    <div class="max-w-screen-xl mx-auto px-6 lg:px-14 flex items-center justify-between" style="height: 68px;">
+
+      <a href="#" class="flex items-center gap-3 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber rounded-sm">
+        <img src="brand_assets/M5-logo-sm.jpg" alt="M5 Advisors" class="w-9 h-9 object-contain" style="border-radius: 2px;">
+        <span class="font-mono text-sm tracking-[0.1em]" style="color: rgba(255,255,255,0.55); font-weight: 500;">M5 Advisors</span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-10">
+        <a href="#services" class="nav-link font-sans text-sm font-medium focus-visible:outline-none"
+           style="color: rgba(255,255,255,0.55); transition: color 0.2s;"
+           onmouseover="this.style.color='rgba(255,255,255,0.88)'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">Services</a>
+        <a href="#work" class="nav-link font-sans text-sm font-medium focus-visible:outline-none"
+           style="color: rgba(255,255,255,0.55); transition: color 0.2s;"
+           onmouseover="this.style.color='rgba(255,255,255,0.88)'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">Work</a>
+        <a href="#about" class="nav-link font-sans text-sm font-medium focus-visible:outline-none"
+           style="color: rgba(255,255,255,0.55); transition: color 0.2s;"
+           onmouseover="this.style.color='rgba(255,255,255,0.88)'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">About</a>
+        <a href="#team" class="nav-link font-sans text-sm font-medium focus-visible:outline-none"
+           style="color: rgba(255,255,255,0.55); transition: color 0.2s;"
+           onmouseover="this.style.color='rgba(255,255,255,0.88)'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">Team</a>
+        <a href="#contact" class="nav-link font-sans text-sm font-medium focus-visible:outline-none"
+           style="color: rgba(255,255,255,0.55); transition: color 0.2s;"
+           onmouseover="this.style.color='rgba(255,255,255,0.88)'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">Contact</a>
+      </nav>
+
+      <a href="#contact" class="btn-outline hidden md:inline-flex">
+        Get in Touch
+      </a>
+    </div>
+  </header>
+
+
+  <!-- ━━━━ HERO ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <section class="relative min-h-screen flex flex-col justify-end overflow-hidden grain" style="padding-bottom: 88px;">
+    <div class="hero-photo" id="heroPhoto"></div>
+    <div class="hero-overlay"></div>
+
+    <!-- Ambient glows -->
+    <div class="absolute inset-0 pointer-events-none" style="z-index: 1;">
+      <div style="position:absolute; top:-18%; right:-12%; width:720px; height:720px; border-radius:50%; background:rgba(28,53,72,0.32); filter:blur(150px);"></div>
+      <div style="position:absolute; bottom:0; left:8%; width:420px; height:420px; border-radius:50%; background:rgba(184,147,90,0.055); filter:blur(110px);"></div>
+    </div>
+
+    <div class="relative max-w-screen-xl mx-auto px-6 lg:px-14 w-full" style="z-index: 3;">
+
+      <!-- Kicker -->
+      <div class="flex items-center gap-3 mb-8 fade-up d1">
+        <span class="rule"></span>
+        <span class="kicker">Digital Infrastructure Advisory</span>
+      </div>
+
+      <!-- Headline -->
+      <h1 class="font-light text-white leading-none mb-8 fade-up d2"
+          style="font-size: clamp(46px, 6.8vw, 94px); letter-spacing: -0.032em; max-width: 15ch; line-height: 1.02;">
+        Where Real Estate<br>
+        Meets <strong class="font-bold">Digital<br>Infrastructure.</strong>
+      </h1>
+
+      <!-- Sub -->
+      <p class="mb-10 fade-up d3"
+         style="font-size: 18px; line-height: 1.75; max-width: 480px; color: rgba(255,255,255,0.70); font-weight: 400;">
+        M5 serves as owner's representative and infrastructure strategist for large-scale development — translating fiber, digital media, and connectivity decisions into lasting owner value.
+      </p>
+
+      <!-- CTAs -->
+      <div class="flex items-center gap-9 fade-up d4">
+        <a href="#contact" class="btn-solid">
+          Get in Touch
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M7 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#services"
+           class="font-sans text-sm font-medium focus-visible:outline-none focus-visible:underline"
+           style="color: rgba(255,255,255,0.48); transition: color 0.2s; letter-spacing: 0.02em;"
+           onmouseover="this.style.color='rgba(255,255,255,0.75)'" onmouseout="this.style.color='rgba(255,255,255,0.48)'">
+          Our Services ↓
+        </a>
+      </div>
+
+      <!-- Metadata strip -->
+      <div class="flex items-stretch gap-10 flex-wrap mt-20 pt-7 fade-up d5"
+           style="border-top: 1px solid rgba(255,255,255,0.09);">
+        <div>
+          <div class="kicker mb-2">Sector</div>
+          <div style="font-size: 15px; color: rgba(255,255,255,0.62); font-weight: 400;">Real Estate Development</div>
+        </div>
+        <div class="vdiv"></div>
+        <div>
+          <div class="kicker mb-2">Discipline</div>
+          <div style="font-size: 15px; color: rgba(255,255,255,0.62); font-weight: 400;">Digital Infrastructure</div>
+        </div>
+        <div class="vdiv hidden md:block"></div>
+        <div class="hidden md:block">
+          <div class="kicker mb-2">Role</div>
+          <div style="font-size: 15px; color: rgba(255,255,255,0.62); font-weight: 400;">Owner's Representative</div>
+        </div>
+        <div class="vdiv hidden lg:block"></div>
+        <div class="hidden lg:block">
+          <div class="kicker mb-2">Scope</div>
+          <div style="font-size: 15px; color: rgba(255,255,255,0.62); font-weight: 400;">Fiber · Digital Media · Connectivity</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ━━━━ SERVICES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <section id="services" class="bg-mist" style="padding: 96px 0 88px;">
+    <div class="max-w-screen-xl mx-auto px-6 lg:px-14">
+
+      <!-- Header -->
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between pb-10" style="border-bottom: 1px solid #D8D5CF;">
+        <div>
+          <div class="flex items-center gap-3 mb-5 sr">
+            <span class="rule"></span>
+            <span class="kicker">What We Do</span>
+          </div>
+          <h2 class="font-light text-ink leading-none sr sr-1"
+              style="font-size: clamp(32px, 4vw, 52px); letter-spacing: -0.022em;">
+            Three Practice<br><strong class="font-semibold">Areas.</strong>
+          </h2>
+        </div>
+        <p class="hidden lg:block text-slate sr sr-2"
+           style="max-width: 280px; padding-bottom: 4px; font-size: 16px; line-height: 1.7; font-weight: 400;">
+          We operate where planning meets execution — across the full lifecycle of digital infrastructure.
+        </p>
+      </div>
+
+      <!-- 01 -->
+      <div class="svc-row sr" style="padding: 52px 0;">
+        <div class="flex flex-col lg:flex-row lg:items-start gap-6 lg:gap-0">
+          <div class="lg:w-20 flex-shrink-0">
+            <span class="svc-num kicker" style="color: rgba(107,107,101,0.55); transition: color 0.38s;">01</span>
+          </div>
+          <div class="lg:w-80 flex-shrink-0">
+            <div class="svc-rule"></div>
+            <h3 class="svc-title text-ink font-semibold"
+                style="font-size: 20px; letter-spacing: -0.018em; transition: color 0.38s;">
+              Client Advisory Services
+            </h3>
+          </div>
+          <div class="flex-1 lg:pl-10">
+            <p class="svc-body text-slate" style="font-size: 16px; line-height: 1.75; font-weight: 400; transition: color 0.38s; max-width: 520px;">
+              Strategic counsel for owners navigating digital infrastructure decisions at every stage of development — from site selection through occupancy and beyond.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 02 -->
+      <div class="svc-row sr sr-1" style="padding: 52px 0;">
+        <div class="flex flex-col lg:flex-row lg:items-start gap-6 lg:gap-0">
+          <div class="lg:w-20 flex-shrink-0">
+            <span class="svc-num kicker" style="color: rgba(107,107,101,0.55); transition: color 0.38s;">02</span>
+          </div>
+          <div class="lg:w-80 flex-shrink-0">
+            <div class="svc-rule"></div>
+            <h3 class="svc-title text-ink font-semibold"
+                style="font-size: 20px; letter-spacing: -0.018em; transition: color 0.38s;">
+              Digital Infrastructure
+            </h3>
+          </div>
+          <div class="flex-1 lg:pl-10">
+            <p class="svc-body text-slate" style="font-size: 16px; line-height: 1.75; font-weight: 400; transition: color 0.38s; max-width: 520px;">
+              From fiber backbone to digital media networks — we design, procure, and oversee the systems that define the modern asset and maximize long-term value for its owners.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 03 -->
+      <div class="svc-row sr sr-2" style="padding: 52px 0; border-bottom: none;">
+        <div class="flex flex-col lg:flex-row lg:items-start gap-6 lg:gap-0">
+          <div class="lg:w-20 flex-shrink-0">
+            <span class="svc-num kicker" style="color: rgba(107,107,101,0.55); transition: color 0.38s;">03</span>
+          </div>
+          <div class="lg:w-80 flex-shrink-0">
+            <div class="svc-rule"></div>
+            <h3 class="svc-title text-ink font-semibold"
+                style="font-size: 20px; letter-spacing: -0.018em; transition: color 0.38s;">
+              Owner's Representation
+            </h3>
+          </div>
+          <div class="flex-1 lg:pl-10">
+            <p class="svc-body text-slate" style="font-size: 16px; line-height: 1.75; font-weight: 400; transition: color 0.38s; max-width: 520px;">
+              M5 acts as your technical and commercial proxy — managing telecom and technology partners so you retain full decision authority and commercial control.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ━━━━ PROJECT WORK ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <section id="work" style="background: #fff; padding: 96px 0;">
+    <div class="max-w-screen-xl mx-auto px-6 lg:px-14">
+
+      <!-- Header -->
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between pb-10 mb-12" style="border-bottom: 1px solid #D8D5CF;">
+        <div>
+          <div class="flex items-center gap-3 mb-5 sr">
+            <span class="rule"></span>
+            <span class="kicker">Project Experience</span>
+          </div>
+          <h2 class="font-light text-ink leading-none sr sr-1"
+              style="font-size: clamp(32px, 4vw, 52px); letter-spacing: -0.022em;">
+            Selected<br><strong class="font-semibold">Work.</strong>
+          </h2>
+        </div>
+        <p class="hidden lg:block text-slate sr sr-2"
+           style="max-width: 300px; padding-bottom: 4px; font-size: 16px; line-height: 1.7; font-weight: 400;">
+          M5 has advised on digital experience, connectivity, and infrastructure across some of the most complex and high-profile development projects in the world.
+        </p>
+      </div>
+
+      <!-- 3-column grid — rows 1 & 2 -->
+      <div class="grid lg:grid-cols-3 gap-x-8 gap-y-14 mb-14">
+
+        <!-- Hudson Yards -->
+        <div class="proj-card sr">
+          <div class="proj-thumb" style="aspect-ratio: 4/3;">
+            <img src="brand_assets/project_images/hudson_yards.jpg" alt="Hudson Yards, New York">
+            <div class="proj-thumb-overlay"></div>
+          </div>
+          <div style="padding: 22px 0 0;">
+            <div class="kicker mb-2" style="color: #B8935A;">New York, NY</div>
+            <h3 class="text-ink font-semibold mb-3" style="font-size: 22px; letter-spacing: -0.02em; line-height: 1.2;">Hudson Yards</h3>
+            <p class="text-slate" style="font-size: 15px; line-height: 1.7; font-weight: 400; margin-bottom: 16px;">
+              Digital experience for the country's largest private development, delivering an integrated wayfinding system, digital activation strategy, and revenue-generating media program across the district.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <span class="proj-tag">Digital Experience</span>
+              <span class="proj-tag">Advisory</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- The Grove -->
+        <div class="proj-card sr sr-1">
+          <div class="proj-thumb" style="aspect-ratio: 4/3;">
+            <img src="brand_assets/project_images/the_grove.jpg" alt="The Grove, Los Angeles">
+            <div class="proj-thumb-overlay"></div>
+          </div>
+          <div style="padding: 22px 0 0;">
+            <div class="kicker mb-2" style="color: #B8935A;">Los Angeles, CA</div>
+            <h3 class="text-ink font-semibold mb-3" style="font-size: 22px; letter-spacing: -0.02em; line-height: 1.2;">The Grove</h3>
+            <p class="text-slate" style="font-size: 15px; line-height: 1.7; font-weight: 400; margin-bottom: 16px;">
+              Advised on a next-generation retail strategy anchored by a payment-enabled loyalty program, connecting customer intelligence, personalization, and transactional engagement across one of the country's highest-grossing retail destinations.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <span class="proj-tag">Digital Experience</span>
+              <span class="proj-tag">Advisory</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CityPlace -->
+        <div class="proj-card sr sr-2">
+          <div class="proj-thumb" style="aspect-ratio: 4/3;">
+            <img src="brand_assets/project_images/cityplace.jpg" alt="CityPlace, West Palm Beach">
+            <div class="proj-thumb-overlay"></div>
+          </div>
+          <div style="padding: 22px 0 0;">
+            <div class="kicker mb-2" style="color: #B8935A;">West Palm Beach, FL</div>
+            <h3 class="text-ink font-semibold mb-3" style="font-size: 22px; letter-spacing: -0.02em; line-height: 1.2;">CityPlace</h3>
+            <p class="text-slate" style="font-size: 15px; line-height: 1.7; font-weight: 400; margin-bottom: 16px;">
+              Owner's rep for building a sponsorship business from the ground up, structuring tightly integrated digital assets including wayfinding and revenue-generating media to underpin a durable commercial program.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <span class="proj-tag">Owner's Rep</span>
+              <span class="proj-tag">Media</span>
+              <span class="proj-tag">Wayfinding</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- LAX -->
+        <div class="proj-card sr sr-1">
+          <div class="proj-thumb" style="aspect-ratio: 4/3;">
+            <img src="brand_assets/project_images/lax.jpg" alt="Los Angeles International Airport">
+            <div class="proj-thumb-overlay"></div>
+          </div>
+          <div style="padding: 22px 0 0;">
+            <div class="kicker mb-2" style="color: #B8935A;">Los Angeles, CA</div>
+            <h3 class="text-ink font-semibold mb-3" style="font-size: 22px; letter-spacing: -0.02em; line-height: 1.2;">Los Angeles International Airport</h3>
+            <p class="text-slate" style="font-size: 15px; line-height: 1.7; font-weight: 400; margin-bottom: 16px;">
+              Customer engagement strategy and wireless infrastructure planning for one of the world's busiest airports, aligning passenger experience objectives with a holistic wireless connectivity approach.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <span class="proj-tag">Customer Experience</span>
+              <span class="proj-tag">Wireless</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Obama Presidential Center -->
+        <div class="proj-card sr sr-2">
+          <div class="proj-thumb" style="aspect-ratio: 4/3;">
+            <img src="brand_assets/project_images/obama_presidential_center.jpg" alt="Obama Presidential Center, Chicago">
+            <div class="proj-thumb-overlay"></div>
+          </div>
+          <div style="padding: 22px 0 0;">
+            <div class="kicker mb-2" style="color: #B8935A;">Chicago, IL</div>
+            <h3 class="text-ink font-semibold mb-3" style="font-size: 22px; letter-spacing: -0.02em; line-height: 1.2;">Obama Presidential Center</h3>
+            <p class="text-slate" style="font-size: 15px; line-height: 1.7; font-weight: 400; margin-bottom: 16px;">
+              Advised on the development of a site-specific wayfinding engine, designing a navigation system calibrated to the civic scale, interpretive mission, and visitor experience of a landmark cultural institution.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <span class="proj-tag">Civic + Cultural</span>
+              <span class="proj-tag">Wayfinding</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ICD Brookfield Place -->
+        <div class="proj-card sr sr-3">
+          <div class="proj-thumb" style="aspect-ratio: 4/3;">
+            <img src="brand_assets/project_images/icd_brookfield_place.jpeg" alt="ICD Brookfield Place, Dubai">
+            <div class="proj-thumb-overlay"></div>
+          </div>
+          <div style="padding: 22px 0 0;">
+            <div class="kicker mb-2" style="color: #B8935A;">Dubai, UAE</div>
+            <h3 class="text-ink font-semibold mb-3" style="font-size: 22px; letter-spacing: -0.02em; line-height: 1.2;">ICD Brookfield Place</h3>
+            <p class="text-slate" style="font-size: 15px; line-height: 1.7; font-weight: 400; margin-bottom: 16px;">
+              Conducted a comprehensive digital assessment to identify gaps across the tenant and visitor experience, translating findings into a strategic plan to elevate ICD Brookfield Place's position as a world-class destination asset.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <span class="proj-tag">Assessment</span>
+              <span class="proj-tag">Strategy</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Full-width anchor card: Brookfield Properties -->
+      <div class="proj-card sr" style="border-top: 1px solid #D8D5CF; padding-top: 14px;">
+        <div class="grid lg:grid-cols-2 gap-8 items-stretch">
+          <div class="proj-thumb" style="aspect-ratio: 16/9;">
+            <img src="brand_assets/project_images/brookfield.jpg" alt="Brookfield Properties master-planned communities">
+            <div class="proj-thumb-overlay"></div>
+          </div>
+          <div style="padding: 24px 0; display: flex; flex-direction: column; justify-content: center;">
+            <div class="kicker mb-2" style="color: #B8935A;">Multiple Markets</div>
+            <h3 class="text-ink font-semibold mb-4" style="font-size: 26px; letter-spacing: -0.02em; line-height: 1.2;">Brookfield Properties</h3>
+            <p class="text-slate" style="font-size: 16px; line-height: 1.75; font-weight: 400; margin-bottom: 20px; max-width: 480px;">
+              Embedded advisor for a portfolio-wide broadband program spanning over a dozen master-planned communities, including deal structuring, operator negotiations, and owner's rep oversight across rollout, contracts, and ongoing program management.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <span class="proj-tag">Broadband</span>
+              <span class="proj-tag">Owner's Rep</span>
+              <span class="proj-tag">Portfolio</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ━━━━ ABOUT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <section id="about" class="relative overflow-hidden grain" style="background: #0A0A0A;">
+
+    <div class="max-w-screen-xl mx-auto">
+      <div class="grid lg:grid-cols-2" style="min-height: 680px;">
+
+        <!-- Left: content -->
+        <div class="relative px-6 lg:px-14 py-24 lg:py-32" style="z-index: 1;">
+
+          <!-- Glow -->
+          <div class="absolute inset-0 pointer-events-none" style="z-index:0;">
+            <div style="position:absolute; top:5%; left:-10%; width:520px; height:520px; border-radius:50%; background:rgba(28,53,72,0.48); filter:blur(140px);"></div>
+            <div style="position:absolute; bottom:0; left:20%; width:300px; height:300px; border-radius:50%; background:rgba(184,147,90,0.04); filter:blur(100px);"></div>
+          </div>
+
+          <div class="relative" style="z-index:1;">
+
+            <div class="flex items-center gap-3 mb-12 sr">
+              <span class="rule"></span>
+              <span class="kicker">The M5 Approach</span>
+            </div>
+
+            <blockquote class="mb-14 sr sr-1"
+                        style="font-size: clamp(22px, 2.6vw, 36px); letter-spacing: -0.02em; color: rgba(255,255,255,0.88); max-width: 28ch; line-height: 1.38; font-weight: 300;">
+              "M5 helps real estate leaders integrate technology to enhance experiences, optimize operations, and unlock lasting asset value — built on two decades at the intersection of people, technology, and the built environment."
+            </blockquote>
+
+            <div style="height:1px; background:rgba(255,255,255,0.09); margin-bottom:52px;"></div>
+
+            <div class="space-y-9">
+
+              <div class="sr sr-2">
+                <div class="kicker mb-3">Owner-side, always</div>
+                <p style="font-size: 16px; line-height: 1.75; font-weight: 400; color: rgba(255,255,255,0.65);">
+                  We work exclusively for owners and developers — never for vendors or operators. That independence is the foundation of every recommendation we make.
+                </p>
+              </div>
+
+              <div class="sr sr-3">
+                <div class="kicker mb-3">Deeply experienced</div>
+                <p style="font-size: 16px; line-height: 1.75; font-weight: 400; color: rgba(255,255,255,0.65);">
+                  Our work is grounded in years of hands-on experience — from digital master planning at Brookfield Asset Management to smart city initiatives at Intersection, part of Alphabet's Sidewalk Labs.
+                </p>
+              </div>
+
+              <div class="sr sr-4">
+                <div class="kicker mb-3">Fluent across disciplines</div>
+                <p style="font-size: 16px; line-height: 1.75; font-weight: 400; color: rgba(255,255,255,0.65);">
+                  We translate between real estate operators, technology vendors, and capital partners — making sure every stakeholder is working from the same picture.
+                </p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: photo -->
+        <div class="relative hidden lg:block">
+          <div class="about-photo absolute inset-0"></div>
+          <div class="absolute inset-0" style="background: linear-gradient(to right, rgba(10,10,10,0.88) 0%, rgba(10,10,10,0.12) 55%, rgba(10,10,10,0.45) 100%);"></div>
+          <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(10,10,10,0.6) 0%, transparent 40%);"></div>
+          <div class="absolute bottom-10 right-10 text-right" style="z-index:2;">
+            <div class="kicker mb-2">Photography</div>
+            <div style="font-size: 13px; font-weight: 400; color:rgba(255,255,255,0.35);">The built environment as system</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ━━━━ TEAM ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <section id="team" class="bg-mist" style="padding: 96px 0;">
+    <div class="max-w-screen-xl mx-auto px-6 lg:px-14">
+
+      <!-- Header -->
+      <div class="pb-10 mb-14" style="border-bottom: 1px solid #D8D5CF;">
+        <div class="flex items-center gap-3 mb-5 sr">
+          <span class="rule"></span>
+          <span class="kicker">Leadership</span>
+        </div>
+        <h2 class="font-light text-ink leading-none sr sr-1"
+            style="font-size: clamp(32px, 4vw, 52px); letter-spacing: -0.022em;">
+          Our<br><strong class="font-semibold">Team.</strong>
+        </h2>
+      </div>
+
+      <!-- Charlie Miller -->
+      <div class="grid lg:grid-cols-[340px_1fr] gap-14 lg:gap-20 items-start sr">
+
+        <!-- Photo -->
+        <div>
+          <div style="aspect-ratio: 1/1; overflow: hidden; background: #D8D5CF;">
+            <img src="brand_assets/project_images/Charlie_headshot.jpg"
+                 alt="Charlie Miller"
+                 style="width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block;">
+          </div>
+        </div>
+
+        <!-- Bio -->
+        <div style="padding-top: 4px;">
+          <div class="kicker mb-3" style="color: #B8935A;">Founder &amp; Managing Director</div>
+          <h3 class="text-ink font-semibold mb-6"
+              style="font-size: 32px; letter-spacing: -0.022em; line-height: 1.15;">Charlie Miller</h3>
+
+          <div class="space-y-5" style="max-width: 600px;">
+            <p class="text-slate" style="font-size: 16px; line-height: 1.78; font-weight: 400;">
+              Charlie is the founder and managing director of M5 Advisors. With a background in digital strategy, product development, and user experience, he helps real estate leaders integrate technology to enhance experiences, optimize operations, and maximize asset value.
+            </p>
+            <p class="text-slate" style="font-size: 16px; line-height: 1.78; font-weight: 400;">
+              Before founding M5, Charlie was VP of Innovation &amp; Digital Experience at Brookfield Asset Management, where he led digital master planning for large-scale developments. Prior to that he was Senior Director at Intersection — part of Sidewalk Labs and Alphabet — and a partner at Control Group, the design and technology consultancy behind the LinkNYC smart city network. For two decades his work has centered on reimagining the interaction between people, technology, and urban spaces.
+            </p>
+            <p class="text-slate" style="font-size: 16px; line-height: 1.78; font-weight: 400;">
+              Charlie serves as a board member of the Governors Island Foundation and is an active advisor to several real estate technology startups. He has advised organizations including Related Companies, Caruso, and the NFL on technology-driven placemaking and consumer engagement.
+            </p>
+          </div>
+
+          <!-- Credentials strip -->
+          <div class="flex flex-wrap gap-x-8 gap-y-4 mt-10 pt-8" style="border-top: 1px solid #D8D5CF;">
+            <div>
+              <div class="kicker mb-1">Previously</div>
+              <div class="text-ink font-medium" style="font-size: 14px;">Brookfield Asset Management</div>
+            </div>
+            <div>
+              <div class="kicker mb-1">&nbsp;</div>
+              <div class="text-ink font-medium" style="font-size: 14px;">Intersection / Sidewalk Labs</div>
+            </div>
+            <div>
+              <div class="kicker mb-1">&nbsp;</div>
+              <div class="text-ink font-medium" style="font-size: 14px;">Control Group</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ━━━━ CONTACT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <section id="contact" class="relative overflow-hidden grain" style="background: #1C3548; padding: 100px 0;">
+
+    <div class="absolute inset-0 pointer-events-none" style="z-index:0;">
+      <div style="position:absolute; bottom:-28%; right:-8%; width:660px; height:660px; border-radius:50%; background:rgba(184,147,90,0.10); filter:blur(140px);"></div>
+      <div style="position:absolute; top:-22%; left:-6%; width:400px; height:400px; border-radius:50%; background:rgba(10,10,10,0.38); filter:blur(110px);"></div>
+    </div>
+
+    <div class="relative max-w-screen-xl mx-auto px-6 lg:px-14" style="z-index:1;">
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-16">
+
+        <div class="sr">
+          <div class="flex items-center gap-3 mb-7">
+            <span class="rule"></span>
+            <span class="kicker">Get in Touch</span>
+          </div>
+          <h2 class="font-light text-white leading-none"
+              style="font-size: clamp(36px, 5vw, 68px); letter-spacing: -0.028em; max-width: 14ch; line-height: 1.06;">
+            Ready to build<br>
+            <strong class="font-bold">smarter?</strong>
+          </h2>
+        </div>
+
+        <div class="sr sr-2 lg:text-right">
+          <p style="font-size: 17px; line-height: 1.75; font-weight: 400; color:rgba(255,255,255,0.62); max-width:340px; margin-left:auto; margin-bottom: 32px;">
+            M5 engages selectively with owners and developers serious about infrastructure as a long-term value driver.
+          </p>
+          <a href="mailto:charlie@m5advisors.com" class="btn-outline">
+            charlie@m5advisors.com
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M7 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ━━━━ FOOTER ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <footer style="background: #0A0A0A; border-top: 1px solid rgba(255,255,255,0.07); padding: 36px 0;">
+    <div class="max-w-screen-xl mx-auto px-6 lg:px-14 flex flex-col md:flex-row items-center justify-between gap-5">
+
+      <div class="flex items-center gap-3">
+        <img src="brand_assets/M5-logo-sm.jpg" alt="M5" class="w-7 h-7 object-contain" style="opacity: 0.55; border-radius: 2px;">
+        <span class="font-mono text-sm tracking-wide" style="color: rgba(255,255,255,0.30); font-weight: 500;">M5 Advisors LLC</span>
+      </div>
+
+      <p class="font-mono text-sm" style="color:rgba(255,255,255,0.22);">© 2026 M5 Advisors LLC. All rights reserved.</p>
+
+      <nav class="flex items-center gap-8">
+        <a href="#services" class="font-sans text-sm font-medium focus-visible:outline-none focus-visible:underline"
+           style="color:rgba(255,255,255,0.30); transition:color 0.2s;"
+           onmouseover="this.style.color='rgba(255,255,255,0.60)'" onmouseout="this.style.color='rgba(255,255,255,0.30)'">Services</a>
+        <a href="#work" class="font-sans text-sm font-medium focus-visible:outline-none focus-visible:underline"
+           style="color:rgba(255,255,255,0.30); transition:color 0.2s;"
+           onmouseover="this.style.color='rgba(255,255,255,0.60)'" onmouseout="this.style.color='rgba(255,255,255,0.30)'">Work</a>
+        <a href="#about" class="font-sans text-sm font-medium focus-visible:outline-none focus-visible:underline"
+           style="color:rgba(255,255,255,0.30); transition:color 0.2s;"
+           onmouseover="this.style.color='rgba(255,255,255,0.60)'" onmouseout="this.style.color='rgba(255,255,255,0.30)'">About</a>
+        <a href="#team" class="font-sans text-sm font-medium focus-visible:outline-none focus-visible:underline"
+           style="color:rgba(255,255,255,0.30); transition:color 0.2s;"
+           onmouseover="this.style.color='rgba(255,255,255,0.60)'" onmouseout="this.style.color='rgba(255,255,255,0.30)'">Team</a>
+        <a href="#contact" class="font-sans text-sm font-medium focus-visible:outline-none focus-visible:underline"
+           style="color:rgba(255,255,255,0.30); transition:color 0.2s;"
+           onmouseover="this.style.color='rgba(255,255,255,0.60)'" onmouseout="this.style.color='rgba(255,255,255,0.30)'">Contact</a>
+      </nav>
+
+    </div>
+  </footer>
+
+
+  <script>
+    // Hero photo zoom-in on load
+    window.addEventListener('load', () => {
+      document.getElementById('heroPhoto').classList.add('loaded');
+    });
+
+    // Scroll reveal
+    const srEls = document.querySelectorAll('.sr');
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('vis');
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    srEls.forEach(el => obs.observe(el));
+  </script>
+
+</body>
+</html>
