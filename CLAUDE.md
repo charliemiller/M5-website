@@ -46,6 +46,12 @@
 - **Spacing:** Use intentional, consistent spacing tokens — not random Tailwind steps.
 - **Depth:** Surfaces should have a layering system (base → elevated → floating), not all sit at the same z-plane.
 
+## Git Workflow
+- **Never push to GitHub unless the user explicitly says so** ("push", "push to GitHub", "ship it", etc.)
+- Default behavior for every change: update `index.html`, screenshot, show the result, and stop.
+- Wait for the user to review and approve before committing or pushing anything.
+- When the user does ask to push, commit all pending changes in a single descriptive commit, then push.
+
 ## Hard Rules
 - Do not add sections, features, or content not in the reference
 - Do not "improve" a reference design — match it
