@@ -152,20 +152,15 @@
     }
 
     /* ── Service rows ── */
+    /* No hover state: these rows are static content, not controls.
+       They still animate in on scroll via .sr. */
     .svc-row {
       border-bottom: 1px solid #D8D5CF;
       cursor: default;
-      transition: background-color 0.38s cubic-bezier(0.16,1,0.3,1);
     }
-    .svc-row:hover { background-color: #0A0A0A; }
-    .svc-row:hover .svc-num   { color: rgba(184,147,90,0.55) !important; }
-    .svc-row:hover .svc-title { color: #fff !important; }
-    .svc-row:hover .svc-body  { color: rgba(255,255,255,0.55) !important; }
-    .svc-row:hover .svc-rule  { width: 56px; }
     .svc-rule {
       height: 1px; width: 32px;
       background: #B8935A;
-      transition: width 0.38s cubic-bezier(0.16,1,0.3,1);
       margin-bottom: 18px;
     }
 
@@ -388,17 +383,17 @@
       <div class="svc-row sr" style="padding: 52px 0;">
         <div class="flex flex-col lg:flex-row lg:items-start gap-6 lg:gap-0">
           <div class="lg:w-20 flex-shrink-0">
-            <span class="svc-num kicker" style="color: rgba(107,107,101,0.55); transition: color 0.38s;">01</span>
+            <span class="svc-num kicker" style="color: rgba(107,107,101,0.55);">01</span>
           </div>
           <div class="lg:w-80 flex-shrink-0">
             <div class="svc-rule"></div>
             <h3 class="svc-title text-ink font-semibold"
-                style="font-size: 20px; letter-spacing: -0.018em; transition: color 0.38s;">
+                style="font-size: 20px; letter-spacing: -0.018em;">
               Strategy & Advisory
             </h3>
           </div>
           <div class="flex-1 lg:pl-10">
-            <p class="svc-body text-slate" style="font-size: 16px; line-height: 1.75; font-weight: 400; transition: color 0.38s; max-width: 520px;">
+            <p class="svc-body text-slate" style="font-size: 16px; line-height: 1.75; font-weight: 400; max-width: 520px;">
               Developing the infrastructure vision and commercial strategy for an asset — identifying the right approach across connectivity, digital media, and smart building programs to create lasting owner value and exceptional experiences for the people who live, work, and shop there.
             </p>
           </div>
@@ -409,17 +404,17 @@
       <div class="svc-row sr sr-1" style="padding: 52px 0;">
         <div class="flex flex-col lg:flex-row lg:items-start gap-6 lg:gap-0">
           <div class="lg:w-20 flex-shrink-0">
-            <span class="svc-num kicker" style="color: rgba(107,107,101,0.55); transition: color 0.38s;">02</span>
+            <span class="svc-num kicker" style="color: rgba(107,107,101,0.55);">02</span>
           </div>
           <div class="lg:w-80 flex-shrink-0">
             <div class="svc-rule"></div>
             <h3 class="svc-title text-ink font-semibold"
-                style="font-size: 20px; letter-spacing: -0.018em; transition: color 0.38s;">
+                style="font-size: 20px; letter-spacing: -0.018em;">
               Owner's Representation
             </h3>
           </div>
           <div class="flex-1 lg:pl-10">
-            <p class="svc-body text-slate" style="font-size: 16px; line-height: 1.75; font-weight: 400; transition: color 0.38s; max-width: 520px;">
+            <p class="svc-body text-slate" style="font-size: 16px; line-height: 1.75; font-weight: 400; max-width: 520px;">
               Serving as your technical and commercial lead through procurement, negotiation, and delivery — so owners retain full decision authority over the systems that define their asset, without needing to build that expertise in-house.
             </p>
           </div>
@@ -430,17 +425,17 @@
       <div class="svc-row sr sr-2" style="padding: 52px 0; border-bottom: none;">
         <div class="flex flex-col lg:flex-row lg:items-start gap-6 lg:gap-0">
           <div class="lg:w-20 flex-shrink-0">
-            <span class="svc-num kicker" style="color: rgba(107,107,101,0.55); transition: color 0.38s;">03</span>
+            <span class="svc-num kicker" style="color: rgba(107,107,101,0.55);">03</span>
           </div>
           <div class="lg:w-80 flex-shrink-0">
             <div class="svc-rule"></div>
             <h3 class="svc-title text-ink font-semibold"
-                style="font-size: 20px; letter-spacing: -0.018em; transition: color 0.38s;">
+                style="font-size: 20px; letter-spacing: -0.018em;">
               Technology Leadership
             </h3>
           </div>
           <div class="flex-1 lg:pl-10">
-            <p class="svc-body text-slate" style="font-size: 16px; line-height: 1.75; font-weight: 400; transition: color 0.38s; max-width: 520px;">
+            <p class="svc-body text-slate" style="font-size: 16px; line-height: 1.75; font-weight: 400; max-width: 520px;">
               Providing ongoing technology leadership across programs and portfolios — managing vendors, contracts, and performance so owners stay in control through every phase of the asset lifecycle.
             </p>
           </div>
@@ -473,7 +468,7 @@
         </p>
       </div>
 
-      <!-- TEMPORARILY REMOVED — Full-width anchor card: Brookfield Properties. Uncomment to restore.
+      <!-- Full-width anchor card: Brookfield Properties -->
       <div class="proj-card sr" style="margin-bottom: 48px;">
         <div class="grid lg:grid-cols-2 gap-8 items-stretch">
           <div class="proj-thumb" style="aspect-ratio: 16/9;">
@@ -484,7 +479,7 @@
             <div class="kicker mb-2" style="color: #B8935A;">Multiple Markets</div>
             <h3 class="text-ink font-semibold mb-4" style="font-size: 26px; letter-spacing: -0.02em; line-height: 1.2;">Brookfield Properties</h3>
             <p class="text-slate" style="font-size: 16px; line-height: 1.75; font-weight: 400; margin-bottom: 20px; max-width: 480px;">
-              Embedded advisor for a portfolio-wide broadband program spanning over a dozen master-planned communities, including deal structuring, operator negotiations, and owner's rep oversight across rollout, contracts, and ongoing program management.
+              Embedded advisor for a portfolio-wide fiber-to-the-home broadband program spanning over a dozen master-planned communities, including deal structuring, operator negotiations, and owner's rep oversight across rollout, contracts, and ongoing program management.
             </p>
             <div class="flex flex-wrap gap-2">
               <span class="proj-tag">Broadband</span>
@@ -494,7 +489,6 @@
           </div>
         </div>
       </div>
-      -->
 
       <!-- 3-column grid -->
       <div class="grid lg:grid-cols-3 gap-x-8 gap-y-14">
