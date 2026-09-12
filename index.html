@@ -30,6 +30,12 @@
     "description": "Digital infrastructure advisory firm serving commercial real estate owners and developers as owner's representative for fiber, connectivity, digital media, and smart building programs.",
     "url": "https://www.m5advisors.com/",
     "email": "hello@m5advisors.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "New York",
+      "addressRegion": "NY",
+      "addressCountry": "US"
+    },
     "founder": {
       "@type": "Person",
       "name": "Charlie Miller",
@@ -142,6 +148,61 @@
       transition: width 0.28s cubic-bezier(0.16,1,0.3,1);
     }
     .nav-link:hover::after { width: 100%; }
+
+    /* ── Mobile menu ── */
+    .brand-word { white-space: nowrap; }
+    @media (max-width: 419px) { .brand-word { display: none; } }
+    .btn-outline-sm { padding: 10px 14px; font-size: 12px; letter-spacing: 0.06em; }
+    .menu-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; margin-right: -8px;
+      background: none; border: 0; cursor: pointer;
+      color: rgba(255,255,255,0.78);
+      transition: color 0.2s;
+    }
+    .menu-btn:hover { color: #fff; }
+    .menu-btn:active { transform: scale(0.94); }
+    .menu-btn:focus-visible { outline: 1px solid #B8935A; outline-offset: 2px; }
+    .mobile-menu {
+      position: fixed; inset: 0; z-index: 60;
+      background: #0A0A0A;
+      display: flex; flex-direction: column;
+      padding: 0 24px 36px;
+      opacity: 0; visibility: hidden; transform: translateY(-6px);
+      transition: opacity 0.32s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.32s cubic-bezier(0.16,1,0.3,1),
+                  visibility 0s linear 0.32s;
+    }
+    .mobile-menu.open {
+      opacity: 1; visibility: visible; transform: none;
+      transition: opacity 0.32s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.32s cubic-bezier(0.16,1,0.3,1),
+                  visibility 0s;
+    }
+    .mm-bar { display: flex; align-items: center; justify-content: space-between; height: 68px; flex-shrink: 0; }
+    .mm-links { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 16px 0; }
+    .mm-link {
+      display: flex; align-items: baseline; gap: 18px;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      color: #fff; text-decoration: none;
+      font-size: clamp(28px, 8vw, 34px); font-weight: 300; letter-spacing: -0.02em; line-height: 1.1;
+      opacity: 0; transform: translateY(10px);
+      transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1), transform 0.5s cubic-bezier(0.16,1,0.3,1);
+    }
+    .mm-link:first-child { border-top: 1px solid rgba(255,255,255,0.08); }
+    .mm-link:focus-visible { outline: 1px solid #B8935A; outline-offset: 4px; }
+    .mm-link .mm-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.18em; color: #B8935A; }
+    .mobile-menu.open .mm-link { opacity: 1; transform: none; }
+    .mobile-menu.open .mm-link:nth-child(1) { transition-delay: 0.05s; }
+    .mobile-menu.open .mm-link:nth-child(2) { transition-delay: 0.10s; }
+    .mobile-menu.open .mm-link:nth-child(3) { transition-delay: 0.15s; }
+    .mobile-menu.open .mm-link:nth-child(4) { transition-delay: 0.20s; }
+    .mobile-menu.open .mm-link:nth-child(5) { transition-delay: 0.25s; }
+    .mm-foot { flex-shrink: 0; }
+    .mm-foot a { font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.04em; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.2s; }
+    .mm-foot a:hover { color: #B8935A; }
+    body.menu-open { overflow: hidden; }
 
     /* ── Amber rule ── */
     .rule {
@@ -280,7 +341,7 @@
 
       <a href="#" class="flex items-center gap-3 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber rounded-sm">
         <img src="brand_assets/M5-logo-sm.jpg" alt="M5 Advisors" class="w-9 h-9 object-contain" style="border-radius: 2px;">
-        <span class="font-mono text-sm tracking-[0.1em]" style="color: rgba(255,255,255,0.55); font-weight: 500;">M5 Advisors</span>
+        <span class="brand-word font-mono text-sm tracking-[0.1em]" style="color: rgba(255,255,255,0.55); font-weight: 500;">M5 Advisors</span>
       </a>
 
       <nav class="hidden md:flex items-center gap-10">
@@ -304,8 +365,43 @@
       <a href="#contact" class="btn-outline hidden md:inline-flex">
         Get in Touch
       </a>
+
+      <!-- Mobile controls -->
+      <div class="flex items-center gap-2 md:hidden">
+        <a href="#contact" class="btn-outline btn-outline-sm">Get in Touch</a>
+        <button type="button" class="menu-btn" id="menuBtn" aria-label="Open menu" aria-controls="mobileMenu" aria-expanded="false">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+            <path d="M2 6h18M2 16h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
     </div>
   </header>
+
+  <!-- ━━━━ MOBILE MENU ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="mobile-menu grain" id="mobileMenu" aria-hidden="true">
+    <div class="mm-bar">
+      <a href="#" class="flex items-center gap-3">
+        <img src="brand_assets/M5-logo-sm.jpg" alt="M5 Advisors" class="w-9 h-9 object-contain" style="border-radius: 2px;">
+        <span class="brand-word font-mono text-sm tracking-[0.1em]" style="color: rgba(255,255,255,0.55); font-weight: 500;">M5 Advisors</span>
+      </a>
+      <button type="button" class="menu-btn" id="menuClose" aria-label="Close menu">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M4 4l14 14M18 4L4 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <nav class="mm-links" aria-label="Mobile">
+      <a href="#services" class="mm-link"><span class="mm-num">01</span>Services</a>
+      <a href="#work"     class="mm-link"><span class="mm-num">02</span>Work</a>
+      <a href="#about"    class="mm-link"><span class="mm-num">03</span>About</a>
+      <a href="#team"     class="mm-link"><span class="mm-num">04</span>Leadership</a>
+      <a href="#contact"  class="mm-link"><span class="mm-num">05</span>Contact</a>
+    </nav>
+    <div class="mm-foot">
+      <a href="mailto:hello@m5advisors.com">hello@m5advisors.com</a>
+    </div>
+  </div>
 
 
   <!-- ━━━━ HERO ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
@@ -361,20 +457,20 @@
           <div class="kicker mb-2">Sector</div>
           <div style="font-size: 15px; color: rgba(255,255,255,0.62); font-weight: 400;">Real Estate Development</div>
         </div>
-        <div class="vdiv"></div>
+        <div class="vdiv hidden md:block"></div>
         <div>
-          <div class="kicker mb-2">Discipline</div>
-          <div style="font-size: 15px; color: rgba(255,255,255,0.62); font-weight: 400;">Digital Infrastructure</div>
+          <div class="kicker mb-2">Based</div>
+          <div style="font-size: 15px; color: rgba(255,255,255,0.62); font-weight: 400;">New York, NY</div>
         </div>
         <div class="vdiv hidden md:block"></div>
-        <div class="hidden md:block">
+        <div>
           <div class="kicker mb-2">Role</div>
           <div style="font-size: 15px; color: rgba(255,255,255,0.62); font-weight: 400;">Owner's Representative</div>
         </div>
         <div class="vdiv hidden lg:block"></div>
         <div class="hidden lg:block">
           <div class="kicker mb-2">Scope</div>
-          <div style="font-size: 15px; color: rgba(255,255,255,0.62); font-weight: 400;">Fiber · Digital Media · Connectivity</div>
+          <div style="font-size: 15px; color: rgba(255,255,255,0.62); font-weight: 400;">Connectivity · Digital Media · Smart Buildings</div>
         </div>
       </div>
 
@@ -497,19 +593,18 @@
       <div class="proj-card sr" style="margin-bottom: 48px;">
         <div class="grid lg:grid-cols-2 gap-8 items-stretch">
           <div class="proj-thumb" style="aspect-ratio: 16/9;">
-            <img src="brand_assets/project_images/brookfield.jpg" alt="Brookfield Properties master-planned communities">
+            <img src="brand_assets/project_images/brookfield_wendell_falls_aerial.jpg" alt="Aerial view of Wendell Falls, a Brookfield master-planned community in North Carolina, with its pool, pavilion, and pond">
             <div class="proj-thumb-overlay"></div>
           </div>
           <div style="padding: 24px 0; display: flex; flex-direction: column; justify-content: center;">
             <div class="kicker mb-2" style="color: #B8935A;">Multiple Markets</div>
             <h3 class="text-ink font-semibold mb-4" style="font-size: 26px; letter-spacing: -0.02em; line-height: 1.2;">Brookfield Properties</h3>
             <p class="text-slate" style="font-size: 16px; line-height: 1.75; font-weight: 400; margin-bottom: 20px; max-width: 480px;">
-              Embedded advisor for a portfolio-wide fiber-to-the-home broadband program spanning over a dozen master-planned communities, including deal structuring, operator negotiations, and owner's rep oversight across rollout, contracts, and ongoing program management.
+              Served as embedded advisor on a portfolio-wide fiber-to-the-home broadband program spanning over a dozen master-planned communities — structuring deals, negotiating with operators, and providing owner's rep oversight across rollout, contracts, and ongoing program management.
             </p>
             <div class="flex flex-wrap gap-2">
-              <span class="proj-tag">Broadband</span>
-              <span class="proj-tag">Owner's Rep</span>
-              <span class="proj-tag">Portfolio</span>
+              <span class="proj-tag">Technology Leadership</span>
+              <span class="proj-tag">Connectivity</span>
             </div>
           </div>
         </div>
@@ -523,16 +618,15 @@
             <div class="proj-thumb-overlay"></div>
           </div>
           <div style="padding: 24px 0; display: flex; flex-direction: column; justify-content: center;">
-            <div class="kicker mb-2" style="color: #B8935A;">Atlanta, GA</div>
+            <div class="kicker mb-2" style="color: #B8935A;">Atlanta, GA <span style="opacity: 0.6;">&middot; Confidential Client</span></div>
             <h3 class="text-ink font-semibold mb-4" style="font-size: 26px; letter-spacing: -0.02em; line-height: 1.2;">Landmark Urban Redevelopment</h3>
             <p class="text-slate" style="font-size: 16px; line-height: 1.75; font-weight: 400; margin-bottom: 20px; max-width: 480px;">
               Led digital master planning for a landmark multi-acre urban redevelopment — identifying billboard and sponsorship revenue opportunities, building the financial model for district-scale digital investment, and establishing an implementation roadmap with partnership strategy and approvals.
             </p>
             <div class="flex flex-wrap gap-2">
-              <span class="proj-tag">Digital Strategy</span>
+              <span class="proj-tag">Strategy</span>
+              <span class="proj-tag">Digital Media</span>
               <span class="proj-tag">Sponsorship</span>
-              <span class="proj-tag">Financial Modeling</span>
-              <span class="proj-tag">Implementation</span>
             </div>
           </div>
         </div>
@@ -551,12 +645,12 @@
             <div class="kicker mb-2" style="color: #B8935A;">West Palm Beach, FL</div>
             <h3 class="text-ink font-semibold mb-3" style="font-size: 22px; letter-spacing: -0.02em; line-height: 1.2;">CityPlace</h3>
             <p class="text-slate" style="font-size: 15px; line-height: 1.7; font-weight: 400; margin-bottom: 16px;">
-              Owner's rep for building a sponsorship business from the ground up, structuring tightly integrated digital assets including wayfinding and revenue-generating media to underpin a durable commercial program.
+              Served as owner's rep in building a sponsorship business from the ground up, structuring tightly integrated digital assets — wayfinding and revenue-generating media — to underpin a durable commercial program.
             </p>
             <div class="flex flex-wrap gap-2">
               <span class="proj-tag">Owner's Rep</span>
-              <span class="proj-tag">Media</span>
-              <span class="proj-tag">Wayfinding</span>
+              <span class="proj-tag">Digital Media</span>
+              <span class="proj-tag">Sponsorship</span>
             </div>
           </div>
         </div>
@@ -574,8 +668,8 @@
               Advised on a next-generation retail strategy anchored by a payment-enabled loyalty program, connecting customer intelligence, personalization, and transactional engagement across one of the country's highest-grossing retail destinations.
             </p>
             <div class="flex flex-wrap gap-2">
-              <span class="proj-tag">Digital Experience</span>
-              <span class="proj-tag">Advisory</span>
+              <span class="proj-tag">Strategy</span>
+              <span class="proj-tag">Experience</span>
             </div>
           </div>
         </div>
@@ -593,9 +687,8 @@
               Led a research and commercialization study exploring next-generation digital infrastructure strategies — open access networks, neutral-host fiber, and SDNs — for the mixed-use developments of the future.
             </p>
             <div class="flex flex-wrap gap-2">
-              <span class="proj-tag">Connectivity Strategy</span>
-              <span class="proj-tag">Research</span>
-              <span class="proj-tag">Program Management</span>
+              <span class="proj-tag">Strategy</span>
+              <span class="proj-tag">Connectivity</span>
             </div>
           </div>
         </div>
@@ -610,11 +703,12 @@
             <div class="kicker mb-2" style="color: #B8935A;">Los Angeles, CA</div>
             <h3 class="text-ink font-semibold mb-3" style="font-size: 22px; letter-spacing: -0.02em; line-height: 1.2;">Los Angeles International Airport</h3>
             <p class="text-slate" style="font-size: 15px; line-height: 1.7; font-weight: 400; margin-bottom: 16px;">
-              Customer engagement strategy and wireless infrastructure planning for one of the world's busiest airports, aligning passenger experience objectives with a holistic wireless connectivity approach.
+              Developed customer engagement strategy and wireless infrastructure planning for one of the world's busiest airports, aligning passenger experience objectives with a holistic connectivity approach.
             </p>
             <div class="flex flex-wrap gap-2">
-              <span class="proj-tag">Customer Experience</span>
-              <span class="proj-tag">Wireless</span>
+              <span class="proj-tag">Strategy</span>
+              <span class="proj-tag">Connectivity</span>
+              <span class="proj-tag">Experience</span>
             </div>
           </div>
         </div>
@@ -632,7 +726,7 @@
               Advised on the development of a site-specific wayfinding engine, designing a navigation system calibrated to the civic scale, interpretive mission, and visitor experience of a landmark cultural institution.
             </p>
             <div class="flex flex-wrap gap-2">
-              <span class="proj-tag">Civic + Cultural</span>
+              <span class="proj-tag">Strategy</span>
               <span class="proj-tag">Wayfinding</span>
             </div>
           </div>
@@ -651,8 +745,8 @@
               Conducted a comprehensive digital assessment to identify gaps across the tenant and visitor experience, translating findings into a strategic plan to elevate ICD Brookfield Place's position as a world-class destination asset.
             </p>
             <div class="flex flex-wrap gap-2">
-              <span class="proj-tag">Assessment</span>
               <span class="proj-tag">Strategy</span>
+              <span class="proj-tag">Experience</span>
             </div>
           </div>
         </div>
@@ -688,10 +782,10 @@
               <span class="kicker">The M5 Approach</span>
             </div>
 
-            <blockquote class="mb-14 sr sr-1"
+            <p class="mb-14 sr sr-1"
                         style="font-size: clamp(22px, 2.6vw, 36px); letter-spacing: -0.02em; color: rgba(255,255,255,0.88); max-width: 28ch; line-height: 1.38; font-weight: 300;">
-              "M5 helps real estate leaders integrate technology to enhance experiences, optimize operations, and unlock lasting asset value — built on two decades at the intersection of people, technology, and the built environment."
-            </blockquote>
+              M5 helps real estate leaders integrate technology to enhance experiences, optimize operations, and unlock lasting asset value — built on two decades at the intersection of people, technology, and the built environment.
+            </p>
 
             <div style="height:1px; background:rgba(255,255,255,0.09); margin-bottom:52px;"></div>
 
@@ -733,7 +827,11 @@
 
       <!-- Header -->
       <div class="pb-10 mb-14" style="border-bottom: 1px solid #D8D5CF;">
-        <h2 class="font-light text-ink leading-none sr"
+        <div class="flex items-center gap-3 mb-5 sr">
+          <span class="rule"></span>
+          <span class="kicker">Who We Are</span>
+        </div>
+        <h2 class="font-light text-ink leading-none sr sr-1"
             style="font-size: clamp(32px, 4vw, 52px); letter-spacing: -0.022em;">
           <strong class="font-semibold">Leadership.</strong>
         </h2>
@@ -823,9 +921,9 @@
             <span class="kicker">Get in Touch</span>
           </div>
           <h2 class="font-light text-white leading-none"
-              style="font-size: clamp(36px, 5vw, 68px); letter-spacing: -0.028em; max-width: 14ch; line-height: 1.06;">
-            Ready to build<br>
-            <strong class="font-bold">smarter?</strong>
+              style="font-size: clamp(36px, 5vw, 68px); letter-spacing: -0.028em; max-width: 20ch; line-height: 1.06;">
+            Building at scale?<br>
+            <strong class="font-bold">Start on the owner's&nbsp;side.</strong>
           </h2>
         </div>
 
@@ -833,7 +931,7 @@
           <p style="font-size: 17px; line-height: 1.75; font-weight: 400; color:rgba(255,255,255,0.62); max-width:340px; margin-left:auto; margin-bottom: 32px;">
             M5 engages selectively with owners and developers serious about infrastructure as a long-term value driver.
           </p>
-          <a href="mailto:hello@m5advisors.com?subject=Hello!" class="btn-outline">
+          <a href="mailto:hello@m5advisors.com?subject=Project%20inquiry" class="btn-outline">
             hello@m5advisors.com
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M7 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
@@ -883,6 +981,26 @@
       document.getElementById('heroPhoto').classList.add('loaded');
       document.getElementById('aboutPhoto').classList.add('loaded');
     });
+
+    // Mobile menu
+    (() => {
+      const menu = document.getElementById('mobileMenu');
+      const btn = document.getElementById('menuBtn');
+      const closeBtn = document.getElementById('menuClose');
+      const setMenu = (open) => {
+        menu.classList.toggle('open', open);
+        document.body.classList.toggle('menu-open', open);
+        menu.setAttribute('aria-hidden', String(!open));
+        btn.setAttribute('aria-expanded', String(open));
+        setTimeout(() => (open ? closeBtn : btn).focus(), open ? 60 : 0);
+      };
+      btn.addEventListener('click', () => setMenu(true));
+      closeBtn.addEventListener('click', () => setMenu(false));
+      menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && menu.classList.contains('open')) setMenu(false);
+      });
+    })();
 
     // Scroll reveal
     const srEls = document.querySelectorAll('.sr');
