@@ -336,6 +336,11 @@
       letter-spacing: 0.18em; text-transform: uppercase;
       color: #B8935A;
     }
+
+    /* ── Client logo strip ── */
+    .client-row{flex:1;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 20px}
+    .client-logo{width:136px;height:auto;opacity:.5;filter:grayscale(1);transform:scale(var(--s,1))}
+    @media (max-width:767px){.client-row{justify-content:center;gap:4px 12px}.client-logo{width:30%}}
   </style>
 </head>
 <body class="font-sans bg-ink text-ink">
@@ -597,6 +602,18 @@
            style="max-width: 480px; padding-bottom: 4px; font-size: 16px; line-height: 1.7; font-weight: 400;">
           M<sub>5</sub> advises on digital experience, connectivity, and infrastructure across some of the most complex and high-profile development projects in the world.
         </p>
+      </div>
+
+      <!-- Client logos -->
+      <div class="flex flex-col lg:flex-row lg:items-center gap-5 lg:gap-14 sr" style="margin:-12px 0 56px;">
+        <div class="kicker flex-shrink-0" style="color:#6B6B65;">Clients include</div>
+        <div class="client-row">
+          <img src="brand_assets/client_logos/brookfield-logo.png" alt="Brookfield" class="client-logo" style="--s:0.8">
+          <img src="brand_assets/client_logos/related-ross-logo.png" alt="Related Ross" class="client-logo" style="--s:1.0">
+          <img src="brand_assets/client_logos/caruso-logo.png" alt="Caruso" class="client-logo" style="--s:0.85">
+          <img src="brand_assets/client_logos/sidewalk-labs-logo.png" alt="Sidewalk Labs" class="client-logo" style="--s:1.12">
+          <img src="brand_assets/client_logos/obama-foundation-logo.png" alt="Obama Foundation" class="client-logo" style="--s:1.12">
+        </div>
       </div>
 
       <!-- Full-width anchor card: Brookfield Properties -->
